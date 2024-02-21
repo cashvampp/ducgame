@@ -16,6 +16,12 @@ targets = {1: [10, 5, 3],
            2: [12, 8, 5],
            3: [10, 8, 6, 3]}
 level = 0
+points = 0
+total_shots = 0
+#0-freeplay, 1-accuracy, 2-timed
+mode = 0
+ammo = 0
+shot = False
 best_freeplay = 0
 best_ammo = 0
 best_timed = 0
@@ -178,7 +184,16 @@ def draw_pause():
         clicked = True
         new_coords = True
 
+def check_shot(targets, coords):
+    global points
+    mouse_position = pygame.mouse.get_pos()
 
+    for i in range(len(targets)):
+        for j in range(len(targets[i])):
+            if targets[i][j].collidepoint(mouse_position):
+                coords[i].pop(j)
+                points += 10+10*(i**2)
+    return coords
 
 
 run = True
@@ -224,12 +239,21 @@ while run:
     if level == 1:
         target_boxes = draw_level(one_coords)
         one_coords = move_level(one_coords)
+        if shot:
+            one_coords = check_shot(target_boxes, one_coords)
+            shot = False
     elif level == 2:
         target_boxes = draw_level(two_coords)
         two_coords = move_level(two_coords)
+        if shot:
+            two_coords = check_shot(target_boxes, two_coords)
+            shot = False
     elif level == 3:
         target_boxes = draw_level(three_coords)
         three_coords = move_level(three_coords)
+        if shot:
+            three_coords = check_shot(target_boxes, three_coords)
+            shot = False
 
     if level > 0:
         draw_gun()
@@ -239,6 +263,11 @@ while run:
             run = False
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             mouse_position = pygame.mouse.get_pos()
+            if (0<mouse_position[0]<width) and (0<mouse_position[1]<height - 200):
+                shot = True
+                total_shots += 1
+                if mode == 1:
+                    ammo -= 1
             if (670 < mouse_position[0] < 860) and (660 < mouse_position[1] < 715):
                 resume_level = level
                 pause = True
