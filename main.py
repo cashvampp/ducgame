@@ -21,6 +21,9 @@ total_shots = 0
 #0-freeplay, 1-accuracy, 2-timed
 mode = 0
 ammo = 0
+time_passed = 0
+time_remaining = 0
+counter = 1
 shot = False
 best_freeplay = 0
 best_ammo = 0
@@ -50,6 +53,22 @@ for i in range(1, 4):
                 target_images[i - 1].append(pygame.transform.scale(
                     pygame.image.load(f'targets/{i}/{j}.png'), (120 - (j*18), 80 - (j*12))))
 
+def draw_score():
+    points_text = font.render(f'Points: {points}', True, 'black')
+    screen.blit(points_text, (320, 660))
+
+    shots_text = font.render(f'Total shots: {total_shots}', True, 'black')
+    screen.blit(shots_text, (320, 687))
+
+    time_text = font.render(f'Time Elapsed: {time_passed}', True, 'black')
+    screen.blit(time_text, (320, 714))
+    if mode == 0:
+        mode_text = font.render(f'Freeplay!', True, 'black')
+    if mode == 1:
+        mode_text = font.render(f'Ammo Remaining: {ammo}', True, 'black')
+    if mode == 2:
+        mode_text = font.render(f'Time Remaining {time_remaining}', True, 'black')
+    screen.blit(mode_text, (320, 741))
 
 def draw_gun():
     mouse_pos = pygame.mouse.get_pos()
@@ -199,6 +218,15 @@ def check_shot(targets, coords):
 run = True
 while run:
     timer.tick(fps)
+    if level != 0:
+        if counter < 60:
+            counter += 1
+        else:
+            counter = 1
+            time_passed += 1
+            if mode == 2:
+                time_remaining -= 1
+         
     if new_coords:
         one_coords = [[], [], []]
         two_coords = [[], [], []]
@@ -257,6 +285,7 @@ while run:
 
     if level > 0:
         draw_gun()
+        draw_score()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
