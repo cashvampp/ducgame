@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2.4.0
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -24,17 +24,15 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run tests
-      run: pytest --cov-report term-missing --cov=main tests/
-
-    - name: Run Flake8 linting
       run: |
-        pip install flake8
-        flake8 --format=html --htmldir=flake8_report your_module
+        pytest --cov-report=xml --cov=.
 
-    - name: Upload Test Report
-      uses: actions/upload-artifact@v2
+    - name: Check code style
+      run: |
+        flake8 --format=html --htmldir=flake8_report .
+
+    - name: Upload test coverage
+      uses: codecov/codecov-action@v2
       with:
-        name: Test Report
-        path: |
-          pytest-report.html
-          flake8_report/
+        token: ${{b41a490d-21fb-4f6c-821b-a1870d62314d}}
+        fail_ci_if_error: true
