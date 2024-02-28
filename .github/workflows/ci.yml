@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -24,21 +23,18 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run tests
-      run: |
-        pytest --cov-report=xml --cov=.
+      run: pytest --cov-report term-missing --cov=main tests/
 
-    - name: Check code style
+    - name: Run Flake8 linting
       run: |
-        flake8 --format=html --htmldir=flake8_report .
+        pip install flake8
+        flake8 --format=html --htmldir=flake8_report your_module
 
-    - name: Save pytest HTML report
+    - name: Upload Test Report
       uses: actions/upload-artifact@v2
       with:
-        name: pytest-report
-        path: ./pytest_report.html
+        name: Test Report
+        path: |
+          pytest-report.html
+          flake8_report/
 
-    - name: Save flake8 HTML report
-      uses: actions/upload-artifact@v2
-      with:
-        name: flake8-report
-        path: ./flake8_report
