@@ -31,8 +31,14 @@ jobs:
       run: |
         flake8 --format=html --htmldir=flake8_report .
 
-    - name: Upload test coverage
-      uses: codecov/codecov-action@v2
+    - name: Save pytest HTML report
+      uses: actions/upload-artifact@v2
       with:
-        token: ${{b41a490d-21fb-4f6c-821b-a1870d62314d}}
-        fail_ci_if_error: true
+        name: pytest-report
+        path: ./pytest_report.html
+
+    - name: Save flake8 HTML report
+      uses: actions/upload-artifact@v2
+      with:
+        name: flake8-report
+        path: ./flake8_report
