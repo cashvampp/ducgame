@@ -30,21 +30,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        
-    - name: Checkout repository
-      uses: actions/checkout@v4
 
     - name: Set Up Python 3.9
       uses: actions/setup-python@v2
-    - name: Set up Python
-      uses: actions/setup-python@v5
       with:
           python-version: 3.9
-        python-version: 3.11.1
 
     - name: Install dependencies
       run: |
@@ -54,14 +44,3 @@ jobs:
     - name: Run tests
       run: |
         pytest
-        pytest --cov-report=xml --cov=.
-
-    - name: Check code style
-      run: |
-        flake8 --format=html --htmldir=flake8_report .
-
-    - name: Upload test coverage
-      uses: codecov/codecov-action@v2
-      with:
-        token: '${{ secrets.CODECOV_TOKEN }}'
-        fail_ci_if_error: true
