@@ -1,38 +1,51 @@
-import pytest
+import unittest
 import pygame
-from main import move_level, check_shot
+from main import *
 
+class TestGameFunctions(unittest.TestCase):
+    def setUp(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode([width, height])
+        self.timer = pygame.time.Clock()
+        self.font = pygame.font.Font('freesansbold.ttf', 32)
+        self.big_font = pygame.font.Font('freesansbold.ttf', 60)
 
-# Тест для функции move_level
-def test_move_level():
-    # Создаем тестовые данные
-    coords = [[(100, 200), (300, 400)], [(500, 600), (700, 800)], [(900, 1000), (1100, 1200)]]
-    
-    # Вызываем функцию move_level
-    new_coords = move_level(coords)
-    
-    # Проверяем, что новые координаты изменились соответственно
-    assert new_coords != coords
-    # Проверяем, что длина списка новых координат равна длине списка старых координат
-    assert len(new_coords) == len(coords)
-    # Проверяем, что длина каждого внутреннего списка новых координат равна длине соответствующего внутреннего списка старых координат
-    for new_sublist, old_sublist in zip(new_coords, coords):
-        assert len(new_sublist) == len(old_sublist)
+    def tearDown(self):
+        pygame.quit()
 
-# Тест для функции check_shot
-def test_check_shot():
-    # Создаем тестовые данные
-    targets = [[pygame.rect.Rect(100, 200, 50, 50)], [pygame.rect.Rect(300, 400, 50, 50)], [pygame.rect.Rect(500, 600, 50, 50)]]
-    coords = [[(100, 200)], [(300, 400)], [(500, 600)]]
-    
-    # Вызываем функцию check_shot
-    new_coords = check_shot(targets, coords)
-    
-    # Проверяем, что новые координаты изменились соответственно
-    assert new_coords != coords
-    # Проверяем, что длина списка новых координат равна длине списка старых координат
-    assert len(new_coords) == len(coords)
-    # Проверяем, что длина каждого внутреннего списка новых координат равна длине соответствующего внутреннего списка старых координат
-    for new_sublist, old_sublist in zip(new_coords, coords):
-        assert len(new_sublist) == len(old_sublist)
+    def test_draw_score(self):
+        # Define the expected rendered text
+        expected_points_text = self.font.render('Points: 0', True, 'black')
+        # Call the draw_score function
+        draw_score(self.screen, 0, 0, 0, 0)
+        # Get the rendered text from the screen
+        actual_points_text = self.screen.blit(expected_points_text, (320, 660))
+        # Compare expected and actual
+        self.assertEqual(actual_points_text, expected_points_text)
 
+        # Similarly, test other parts of draw_score function
+
+    def test_move_level(self):
+        # Test move_level function
+        # Prepare input data and expected output
+        coords = [[(100, 200)], [(300, 400)], [(500, 600)]]
+        expected_coords = [[(98, 200)], [(298, 400)], [(498, 600)]]
+        # Call the function
+        result = move_level(coords)
+        # Check if the result matches expected output
+        self.assertEqual(result, expected_coords)
+
+    def test_check_shot(self):
+        # Test check_shot function
+        # Prepare input data
+        targets = [[pygame.rect.Rect(100, 200, 50, 50)]]
+        coords = [[(100, 200)]]
+        # Call the function
+        result = check_shot(targets, coords)
+        # Check if the result is as expected
+        self.assertEqual(result, [[]])
+
+    # Add more tests for other functions as needed
+
+if __name__ == '__main__':
+    unittest.main()
