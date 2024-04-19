@@ -3,6 +3,7 @@ import math
 
 pygame.init()
 fps = 60
+zxczxczxczxczxczc = 1
 timer = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 32)
 big_font = pygame.font.Font('freesansbold.ttf', 60)
